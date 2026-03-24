@@ -1,0 +1,6 @@
+MAKE SURE TO chmod 600 ON secrets.lua FILE!
+example:
+local M = {}
+M.gemini_api_key = "key here"
+M.openclaw_gateway_token = "token here"
+return M

@@ -1,0 +1,18 @@
+local opt = vim.opt
+
+opt.mouse = "a"
+opt.number = true
+opt.relativenumber = true
+opt.breakindent = true
+opt.undofile = true
+opt.ignorecase = true
+opt.smartcase = true
+opt.updatetime = 250
+opt.timeoutlen = 300
+opt.completeopt = 'menuone,noselect'
+opt.termguicolors = true
+opt.shiftwidth = 2
+opt.softtabstop = 2
+opt.tabstop = 8
+opt.expandtab = true
+opt.splitright = true

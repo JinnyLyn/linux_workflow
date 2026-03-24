@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "hexstrike-ai": {
+      "alwaysAllow": [
+        
+      ],
+      "description": "HexStrike AI v6.0 - Advanced Cybersecurity Automation Platform. Turn off alwaysAllow if you dont want autonomous execution!",
+      "command": "/home/jin/hexstrike-ai/hexstrike-env/bin/python3",
+      "disabled": false,
+      "timeout": 300,
+      "args": [
+        "/home/jin/hexstrike-ai/hexstrike_mcp.py",
+        "--server",
+        "http://localhost:8888"
+      ]
+    }
+  },
+  "nativeMCPServers": {
+    "mcphub": {
+      "autoApprove": [
+        
+      ]
+    }
+  }
+}
