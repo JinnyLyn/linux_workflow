@@ -18,6 +18,14 @@ else
     echo "[!] Unsupported package manager. Please install neovim, tmux, git, curl, gcc, ripgrep, xclip, nodejs, npm manually."
 fi
 
+# 1.5. Install opencode if not present
+if ! command -v opencode &> /dev/null; then
+    echo "[*] Installing opencode..."
+    curl -fsSL https://opencode.ai/install | bash
+else
+    echo "[*] opencode already installed"
+fi
+
 # 2. Setup Directories
 echo "[*] Setting up directories..."
 mkdir -p ~/.config
@@ -35,6 +43,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ln -sfn "$SCRIPT_DIR/nvim" ~/.config/nvim
 [ -f "$SCRIPT_DIR/.tmux.conf" ] && ln -sfn "$SCRIPT_DIR/.tmux.conf" ~/.tmux.conf
 [ -d "$SCRIPT_DIR/.tmux" ] && ln -sfn "$SCRIPT_DIR/.tmux" ~/.tmux
+[ -d "$SCRIPT_DIR/opencode" ] && ln -sfn "$SCRIPT_DIR/opencode" ~/.config/opencode
 
 # 5. Install Tmux Plugin Manager (TPM) if missing
 if [ ! -d ~/.tmux/plugins/tpm ]; then
@@ -56,5 +65,13 @@ echo ""
 echo "To finish setting up Neovim:"
 echo "  1. Open: nvim"
 echo "  2. Lazy.nvim will automatically download and install all plugins."
+echo ""
+echo "To configure opencode API key (required for AI features):"
+echo "  Add to your shell profile (~/.zshrc or ~/.bashrc):"
+echo "    export GOOGLE_API_KEY='your-gemini-api-key'"
+echo ""
+echo "  Or create ~/.config/opencode/opencode.local.json:"
+echo '    { "provider": { "google": { "options": { "apiKey": "your-key" } } } }'
+echo ""
 echo "====================================================================="
 echo ""

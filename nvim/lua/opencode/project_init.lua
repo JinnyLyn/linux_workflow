@@ -1,0 +1,89 @@
+local M = {}
+
+local TEMPLATE_AGENTS = [[
+---
+description: Custom project agent
+mode: subagent
+---
+
+Add your custom agent instructions here.
+]]
+
+local TEMPLATE_OPENCODE_JSON = [[
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md"]
+}
+]]
+
+local TEMPLATE_AGENTS_MD = [[
+# Project: %s
+
+## Overview
+Brief description of this project.
+
+## Tech Stack
+- Language/Framework 1
+- Language/Framework 2
+
+## Structure
+Describe the project directory structure.
+
+## Conventions
+- Coding style guidelines
+- Naming conventions
+- Git workflow
+
+## Commands
+Common commands for development:
+- `make dev` - Start development server
+- `make test` - Run tests
+
+## Notes
+Additional project-specific notes for the AI agent.
+]]
+
+function M.create_opencode_dir()
+  local root = vim.fn.getcwd()
+  local opencode_path = root .. '/.opencode'
+  
+  if vim.fn.isdirectory(opencode_path) == 1 then
+    vim.notify('Opencode directory already exists: ' .. opencode_path, vim.log.levels.WARN)
+    return false
+  end
+  
+  vim.fn.mkdir(opencode_path, 'p')
+  vim.fn.mkdir(opencode_path .. '/agents', 'p')
+  vim.fn.mkdir(opencode_path .. '/commands', 'p')
+  vim.fn.mkdir(opencode_path .. '/prompts', 'p')
+  
+  vim.fn.writefile({ TEMPLATE_OPENCODE_JSON }, opencode_path .. '/opencode.json')
+  
+  local project_name = vim.fn.fnamemodify(root, ':t')
+  local agents_md_content = string.format(TEMPLATE_AGENTS_MD, project_name)
+  vim.fn.writefile(vim.split(agents_md_content, '\n'), opencode_path .. '/AGENTS.md')
+  
+  vim.fn.writefile(vim.split(TEMPLATE_AGENTS, '\n'), opencode_path .. '/agents/custom.md')
+  
+  vim.notify('Created .opencode/ directory in: ' .. root, vim.log.levels.INFO)
+  return true
+end
+
+function M.init_project()
+  local root = require('opencode.context').get_git_root()
+  local original_cwd = vim.fn.getcwd()
+  
+  vim.cmd('cd ' .. root)
+  local success = M.create_opencode_dir()
+  
+  vim.cmd('cd ' .. original_cwd)
+  return success
+end
+
+vim.api.nvim_create_user_command('OpencodeInitProject', function()
+  M.init_project()
+end, {
+  desc = 'Initialize .opencode/ directory for the current project',
+})
+
+return M

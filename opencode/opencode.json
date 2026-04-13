@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "google/gemini-3.1-pro",
+  "default_agent": "build",
+  "autoupdate": true,
+  "permission": {
+    "edit": "ask",
+    "bash": "ask"
+  }
+}

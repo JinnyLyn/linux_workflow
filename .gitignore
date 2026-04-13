@@ -2,3 +2,5 @@
 .tmux/resurrect/
 nvim/.git/
 nvim/lua/secrets.lua
+opencode/node_modules/
+opencode/package-lock.json
