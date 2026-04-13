@@ -1,0 +1,12 @@
+#!/bin/bash
+# oc-gc: Manual garbage collection script for Opencode.
+
+PROMPT="CRITICAL WORKFLOW INSTRUCTIONS (Pillar 3: Garbage Collection):
+1. Read OPENCODE.md to understand the current rules.
+2. Scan the current project directory for any files that violate the rules in OPENCODE.md.
+3. Specifically look for and remove unused code, commented-out dead code, or obsolete configuration.
+4. Run './run-checks.sh' to ensure your cleanup did not break anything.
+5. If changes were made and tests pass, commit the changes with a message like 'chore: opencode garbage collection cleanup'. If no changes were needed, just report that the codebase is clean."
+
+echo "Triggering Opencode Garbage Collection..."
+opencode run --agent code-gc "$PROMPT"

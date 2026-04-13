@@ -1,0 +1,43 @@
+#!/bin/bash
+# oc-init: Initializes a project with the Opencode Harness framework.
+
+set -e
+
+HARNESS_DIR="$HOME/linux_workflow/opencode-harness/templates"
+HOOK_TEMPLATE="#!/bin/bash\n\n# Opencode Pre-push Hook (Garbage Collection)\n# This triggers the garbage collector before code is pushed to remote.\n\necho \"Running Opencode Garbage Collection...\"\noc-gc || {\n  echo \"Garbage collection failed or found issues that need manual review.\"\n  echo \"Push aborted. You can bypass this with git push --no-verify\"\n  exit 1\n}\n\nexit 0\n"
+
+if [ $# -ne 1 ]; then
+    echo "Usage: oc-init <template_name>"
+    echo "Available templates: python, web, c_cpp, go, generic"
+    exit 1
+fi
+
+TEMPLATE=$1
+
+if [ ! -d "$HARNESS_DIR/$TEMPLATE" ]; then
+    echo "Error: Template '$TEMPLATE' not found in $HARNESS_DIR"
+    exit 1
+fi
+
+echo "Initializing Opencode harness using template '$TEMPLATE'..."
+
+# Copy templates
+cp "$HARNESS_DIR/$TEMPLATE/OPENCODE.md" .
+cp "$HARNESS_DIR/$TEMPLATE/run-checks.sh" .
+
+chmod +x run-checks.sh
+
+# Setup git hook if it's a git repo
+if [ -d ".git" ]; then
+    HOOK_DIR=".git/hooks"
+    PRE_PUSH="$HOOK_DIR/pre-push"
+    
+    echo -e "$HOOK_TEMPLATE" > "$PRE_PUSH"
+    chmod +x "$PRE_PUSH"
+    echo "Installed git pre-push hook for automatic garbage collection."
+else
+    echo "Not a git repository. Skipping pre-push hook installation."
+fi
+
+echo "Initialization complete!"
+echo "Please review OPENCODE.md and customize run-checks.sh as needed."

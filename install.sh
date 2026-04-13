@@ -52,6 +52,20 @@ if [ ! -d ~/.tmux/plugins/tpm ]; then
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
 
+# 6. Setup Opencode Harness Framework
+echo "[*] Setting up Opencode Harness Framework..."
+chmod +x "$SCRIPT_DIR/bin/oc-init" "$SCRIPT_DIR/bin/oc-do" "$SCRIPT_DIR/bin/oc-gc" 2>/dev/null || true
+
+# Add bin to PATH in bashrc/zshrc
+for rc in ~/.bashrc ~/.zshrc; do
+    if [ -f "$rc" ]; then
+        if ! grep -q "$SCRIPT_DIR/bin" "$rc"; then
+            echo "export PATH=\"$SCRIPT_DIR/bin:\$PATH\"" >> "$rc"
+            echo "[*] Added $SCRIPT_DIR/bin to $rc"
+        fi
+    fi
+done
+
 echo ""
 echo "====================================================================="
 echo "***  INSTALLATION SUCCESSFUL!  ***"

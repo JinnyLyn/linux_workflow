@@ -1,0 +1,24 @@
+#!/bin/bash
+# oc-do: Runs an Opencode task wrapped in the Supervisor loop.
+
+if [ -z "$1" ]; then
+    echo "Usage: oc-do \"<your task description>\""
+    exit 1
+fi
+
+TASK="$1"
+
+# The prompt forces the use of the error-checker agent and adherence to Pillar 2.
+PROMPT="TASK: $TASK
+
+CRITICAL WORKFLOW INSTRUCTIONS:
+1. You must read OPENCODE.md to understand the rules before starting.
+2. Complete the requested task.
+3. You are part of a Supervisor loop. Before you conclude this session, you MUST use the Task tool to launch the 'error-checker' subagent.
+4. Instruct the 'error-checker' agent to run './run-checks.sh' using the bash tool.
+5. If the 'error-checker' reports ANY errors from the bash tool, you MUST fix the errors in your code, and then invoke the 'error-checker' again.
+6. Once the tests pass, evaluate if the error was due to a missing rule. If so, append a 1-sentence constraint to OPENCODE.md so you don't make the mistake again.
+7. Conclude only when the error-checker confirms success."
+
+echo "Starting Opencode in Supervisor Loop..."
+opencode run "$PROMPT"
