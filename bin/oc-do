@@ -1,8 +1,27 @@
 #!/bin/bash
 # oc-do: Runs an Opencode task wrapped in the Supervisor loop.
 
+# --- Help Section ---
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    echo "Usage: oc-do \"<your task description>\""
+    echo ""
+    echo "Executes an Opencode task within a strict, multi-agent Supervisor loop."
+    echo "This command forces the AI agent to:"
+    echo "  1. Read OPENCODE.md rules."
+    echo "  2. Write failing tests first (TDD)."
+    echo "  3. Complete your requested task."
+    echo "  4. Pass the code to an 'error-checker' sub-agent."
+    echo "  5. Successfully pass all tests in ./run-checks.sh before concluding."
+    echo "  6. Update OPENCODE.md with new rules if it makes a mistake."
+    echo ""
+    echo "Example:"
+    echo "  oc-do \"Implement the user authentication API endpoint\""
+    exit 0
+fi
+
 if [ -z "$1" ]; then
     echo "Usage: oc-do \"<your task description>\""
+    echo "Run 'oc-do --help' for more information."
     exit 1
 fi
 

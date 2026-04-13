@@ -1,6 +1,23 @@
 #!/bin/bash
 # oc-gc: Manual garbage collection script for Opencode.
 
+# --- Help Section ---
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    echo "Usage: oc-gc"
+    echo ""
+    echo "Triggers a manual Garbage Collection pass using the Opencode 'code-gc' agent."
+    echo "This is automatically run by the pre-push hook (if installed via oc-init),"
+    echo "but can be run manually at any time."
+    echo ""
+    echo "The agent will:"
+    echo "  1. Read OPENCODE.md rules."
+    echo "  2. Scan the project for dead code, unused imports, and commented-out blocks."
+    echo "  3. Remove the garbage."
+    echo "  4. Ensure ./run-checks.sh still passes."
+    echo "  5. Commit the cleanups automatically."
+    exit 0
+fi
+
 PROMPT="CRITICAL WORKFLOW INSTRUCTIONS (Pillar 3: Garbage Collection):
 1. Read OPENCODE.md to understand the current rules.
 2. Scan the current project directory for any files that violate the rules in OPENCODE.md.
