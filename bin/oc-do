@@ -5,14 +5,14 @@
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     echo "Usage: oc-do \"<your task description>\""
     echo ""
-    echo "Executes an Opencode task within a strict, multi-agent Supervisor loop."
+    echo "Executes an AI task within a strict, multi-agent Supervisor loop."
     echo "This command forces the AI agent to:"
-    echo "  1. Read OPENCODE.md rules."
+    echo "  1. Read .claude/OPENCODE.md rules."
     echo "  2. Write failing tests first (TDD)."
     echo "  3. Complete your requested task."
     echo "  4. Pass the code to an 'error-checker' sub-agent."
-    echo "  5. Successfully pass all tests in ./run-checks.sh before concluding."
-    echo "  6. Update OPENCODE.md with new rules if it makes a mistake."
+    echo "  5. Successfully pass all tests in .claude/run-checks.sh before concluding."
+    echo "  6. Update .claude/OPENCODE.md with new rules if it makes a mistake."
     echo ""
     echo "Example:"
     echo "  oc-do \"Implement the user authentication API endpoint\""
@@ -27,17 +27,17 @@ fi
 
 TASK="$1"
 
-# The prompt forces the strict Feedback Loop.
+# The prompt forces the strict Feedback Loop using the .claude directory.
 PROMPT="TASK: $TASK
 
 CRITICAL SUPERVISOR WORKFLOW (STRICT ENFORCEMENT):
-1. READ FIRST: You MUST read OPENCODE.md and execute './run-checks.sh' to establish a baseline before writing ANY code. If baseline checks fail, fix the environment/dependencies immediately.
+1. READ FIRST: You MUST read .claude/OPENCODE.md and execute '.claude/run-checks.sh' to establish a baseline before writing ANY code. If baseline checks fail, fix the environment/dependencies immediately.
 2. TDD ENFORCEMENT: If fixing a bug or adding a feature, you MUST write a test that fails first, then write the code to make it pass.
 3. EXECUTE: Complete the requested task.
-4. GATEKEEPER: Before concluding, you MUST launch the 'error-checker' subagent via the Task tool. Instruct it to run './run-checks.sh'.
+4. GATEKEEPER: Before concluding, you MUST launch the 'error-checker' subagent via the Task tool. Instruct it to run '.claude/run-checks.sh'.
 5. FIX LOOP: If the gatekeeper fails, you MUST fix the code, write a new test to cover the edge case, and invoke the gatekeeper again.
-6. KNOWLEDGE CAPTURE: If an error occurred that wasn't covered in OPENCODE.md, you MUST append a new constraint to OPENCODE.md.
-7. NEVER exit successfully if './run-checks.sh' fails or is bypassed."
+6. KNOWLEDGE CAPTURE: If an error occurred that wasn't covered in .claude/OPENCODE.md, you MUST append a new constraint to .claude/OPENCODE.md.
+7. NEVER exit successfully if '.claude/run-checks.sh' fails or is bypassed."
 
-echo "Starting Opencode in Supervisor Loop..."
+echo "Starting AI Supervisor Loop..."
 opencode run "$PROMPT"

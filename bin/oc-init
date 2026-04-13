@@ -1,5 +1,5 @@
 #!/bin/bash
-# oc-init: Initializes a project with the Opencode Harness framework.
+# oc-init: Initializes a project with the Opencode/Claude Harness framework.
 
 set -e
 
@@ -7,9 +7,9 @@ set -e
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     echo "Usage: oc-init <template_name>"
     echo ""
-    echo "Initializes the current directory with the Opencode Multi-Agent Harness framework."
-    echo "This copies the appropriate OPENCODE.md and run-checks.sh templates into your project"
-    echo "and installs a Git pre-push hook for automatic garbage collection."
+    echo "Initializes the current directory with the AI Multi-Agent Harness framework."
+    echo "This creates a .claude/ directory and copies the appropriate OPENCODE.md"
+    echo "and run-checks.sh templates into it, ensuring clean project roots."
     echo ""
     echo "Available templates:"
     echo "  python  - Enforces ruff linting and pytest"
@@ -39,13 +39,16 @@ if [ ! -d "$HARNESS_DIR/$TEMPLATE" ]; then
     exit 1
 fi
 
-echo "Initializing Opencode harness using template '$TEMPLATE'..."
+echo "Initializing AI harness using template '$TEMPLATE'..."
 
-# Copy templates
-cp "$HARNESS_DIR/$TEMPLATE/OPENCODE.md" .
-cp "$HARNESS_DIR/$TEMPLATE/run-checks.sh" .
+# Create the .claude directory to keep the project root clean
+mkdir -p .claude
 
-chmod +x run-checks.sh
+# Copy templates into the .claude directory
+cp "$HARNESS_DIR/$TEMPLATE/OPENCODE.md" .claude/
+cp "$HARNESS_DIR/$TEMPLATE/run-checks.sh" .claude/
+
+chmod +x .claude/run-checks.sh
 
 # Setup git hook if it's a git repo
 if [ -d ".git" ]; then
@@ -59,5 +62,5 @@ else
     echo "Not a git repository. Skipping pre-push hook installation."
 fi
 
-echo "Initialization complete!"
-echo "Please review OPENCODE.md and customize run-checks.sh as needed."
+echo "Initialization complete! Files stored in .claude/"
+echo "Please review .claude/OPENCODE.md and customize .claude/run-checks.sh as needed."

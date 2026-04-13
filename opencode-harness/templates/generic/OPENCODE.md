@@ -1,8 +1,8 @@
-# OPENCODE.md (Generic Rules)
+# .claude/OPENCODE.md (Generic Rules)
 
 ## Core Directives
-1. **Pillar 1 (The Map):** This file contains absolute project rules. If you (the agent) make an error caught by tests/linters, you MUST add a concise, 1-sentence rule here to prevent future recurrence.
-2. **Pillar 2 (Supervisor Loop):** Do not finalize work without ensuring `./run-checks.sh` passes completely.
+1. **Pillar 1 (The Map):** This file contains absolute project rules.
+2. **Pillar 2 (Supervisor Loop):** Do not finalize work without ensuring `.claude/run-checks.sh` passes completely.
 3. **Pillar 3 (Garbage Collection):** Code must be clean. No commented-out dead code.
 
 ## Dynamic Constraints (Added by Agents)
