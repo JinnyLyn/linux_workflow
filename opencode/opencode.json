@@ -3,5 +3,31 @@
   "plugin": [
     "@tarquinen/opencode-dcp@latest",
     "@josxa/opencode-pty@latest"
-  ]
+  ],
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true,
+      "headers": {
+        "CONTEXT7_API_KEY": "ctx7sk-1790b2f3-3dfb-4f26-9104-d3ba4dbe900e"
+      }
+    }
+  },
+  "provider": {
+    "Tabby-local": {
+      "name": "TabbyAPI (local)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "apiKey": "dc5843b283558f23759ea42da3fb14ec",
+        "baseURL": "http://localhost:5000/v1"
+      },
+      "models": {
+        "local-model-id": {
+          "name": "gemma-4-26B-4.10bpw",
+          "tool_call": true
+        }
+      }
+    }
+  }
 }

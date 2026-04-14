@@ -69,15 +69,28 @@ function M.create_opencode_dir()
   return true
 end
 
-function M.init_project()
+function M.init_project(template)
   local root = require('opencode.context').get_git_root()
   local original_cwd = vim.fn.getcwd()
   
+  if template == nil or template == "" then
+    template = "generic"
+  end
+
   vim.cmd('cd ' .. root)
-  local success = M.create_opencode_dir()
   
+  local cmd = string.format("bin/oc-init %s", template)
+  local result = vim.fn.system(cmd)
+  
+  if vim.v.shell_error ~= 0 then
+    vim.notify('Error initializing project: ' .. result, vim.log.levels.ERROR)
+    vim.cmd('cd ' .. original_cwd)
+    return false
+  end
+
+  vim.notify('Project initialized with template: ' .. template, vim.log.levels.INFO)
   vim.cmd('cd ' .. original_cwd)
-  return success
+  return true
 end
 
 vim.api.nvim_create_user_command('OpencodeInitProject', function()

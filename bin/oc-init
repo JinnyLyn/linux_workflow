@@ -8,8 +8,8 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     echo "Usage: oc-init <template_name>"
     echo ""
     echo "Initializes the current directory with the AI Multi-Agent Harness framework."
-    echo "This creates a .claude/ directory and copies the appropriate OPENCODE.md"
-    echo "and run-checks.sh templates into it, ensuring clean project roots."
+    echo "This creates .claude/ and .opencode/ directories and copies the appropriate"
+    echo "templates into them, ensuring clean project roots."
     echo ""
     echo "Available templates:"
     echo "  python  - Enforces ruff linting and pytest"
@@ -23,8 +23,26 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     exit 0
 fi
 
-HARNESS_DIR="$HOME/linux_workflow/opencode-harness/templates"
-HOOK_TEMPLATE="#!/bin/bash\n\n# Opencode Pre-push Hook (Garbage Collection)\n# This triggers the garbage collector before code is pushed to remote.\n\necho \"Running Opencode Garbage Collection...\"\noc-gc || {\n  echo \"Garbage collection failed or found issues that need manual review.\"\n  echo \"Push aborted. You can bypass this with git push --no-verify\"\n  exit 1\n}\n\nexit 0\n"
+# Use the script's location to find the harness directory relative to the project root
+# Since this script is in bin/, we can go up one level to find opencode-harness
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+HARNESS_DIR="$PROJECT_ROOT/opencode-harness/templates"
+
+HOOK_TEMPLATE="#!/bin/bash
+
+# Opencode Pre-push Hook (Garbage Collection)
+# This triggers the garbage collector before code is pushed to remote.
+
+echo \"Running Opencode Garbage Collection...\"
+oc-gc || {
+  echo \"Garbage collection failed or found issues that need manual review.\"
+  echo \"Push aborted. You can bypass this with git push --no-verify\"
+  exit 1
+}
+
+exit 0
+"
 
 if [ $# -ne 1 ]; then
     echo "Usage: oc-init <template_name>"
@@ -41,26 +59,34 @@ fi
 
 echo "Initializing AI harness using template '$TEMPLATE'..."
 
-# Create the .claude directory to keep the project root clean
+# 1. Create the directories
 mkdir -p .claude
+mkdir -p .opencode/agents
+mkdir -p .opencode/commands
+mkdir -p .opencode/prompts
 
-# Copy templates into the .claude directory
-cp "$HARNESS_DIR/$TEMPLATE/OPENCODE.md" .claude/
-cp "$HARNESS_DIR/$TEMPLATE/run-checks.sh" .claude/
+# 2. Copy the contents of the .claude/ folder from the template
+cp -r "$HARNESS_DIR/$TEMPLATE/.claude/." .claude/
 
-chmod +x .claude/run-checks.sh
+# 3. Copy the contents of the .opencode/ folder from the template
+cp -r "$HARNESS_DIR/$TEMPLATE/.opencode/." .opencode/
 
-# Setup git hook if it's a git repo
+# 4. Ensure run-checks.sh is executable
+if [ -f ".claude/run-checks.sh" ]; then
+    chmod +x .claude/run-checks.sh
+fi
+
+# 5. Setup git hook if it's a git repo
 if [ -d ".git" ]; then
     HOOK_DIR=".git/hooks"
     PRE_PUSH="$HOOK_DIR/pre-push"
     
-    echo -e "$HOOK_TEMPLATE" > "$PRE_PUSH"
+    echo "$HOOK_TEMPLATE" > "$PRE_PUSH"
     chmod +x "$PRE_PUSH"
     echo "Installed git pre-push hook for automatic garbage collection."
 else
     echo "Not a git repository. Skipping pre-push hook installation."
 fi
 
-echo "Initialization complete! Files stored in .claude/"
-echo "Please review .claude/OPENCODE.md and customize .claude/run-checks.sh as needed."
+echo "Initialization complete!"
+echo ".claude/ and .opencode/ have been populated from the '$TEMPLATE' template."
