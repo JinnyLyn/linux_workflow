@@ -105,7 +105,12 @@ return {
       end, { desc = "Code review with code-reviewer agent" })
 
       vim.keymap.set("n", "<leader>oi", function()
-        require("opencode").init_project()
+        local templates = {"generic", "python", "web", "c_cpp", "go"}
+        vim.ui.select(templates, { prompt = "Select Harness Template:" }, function(choice)
+          if choice then
+            require("opencode.project_init").init_project(choice)
+          end
+        end)
       end, { desc = "Initialize opencode project" })
 
       vim.keymap.set("n", "<leader>ox", function()

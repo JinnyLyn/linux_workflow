@@ -79,7 +79,7 @@ function M.init_project(template)
 
   vim.cmd('cd ' .. root)
   
-  local cmd = string.format("bin/oc-init %s", template)
+  local cmd = string.format("oc-init %s", template)
   local result = vim.fn.system(cmd)
   
   if vim.v.shell_error ~= 0 then
@@ -93,10 +93,14 @@ function M.init_project(template)
   return true
 end
 
-vim.api.nvim_create_user_command('OpencodeInitProject', function()
-  M.init_project()
+vim.api.nvim_create_user_command('OpencodeInitProject', function(opts)
+  M.init_project(opts.args)
 end, {
+  nargs = "?",
   desc = 'Initialize .opencode/ directory for the current project',
+  complete = function()
+    return {"generic", "python", "web", "c_cpp", "go"}
+  end
 })
 
 return M

@@ -5,7 +5,7 @@ set -e
 
 # --- Help Section ---
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-    echo "Usage: oc-init <template_name>"
+    echo "Usage: oc-init [template_name]"
     echo ""
     echo "Initializes the current directory with the AI Multi-Agent Harness framework."
     echo "This creates .claude/ and .opencode/ directories and copies the appropriate"
@@ -44,13 +44,40 @@ oc-gc || {
 exit 0
 "
 
-if [ $# -ne 1 ]; then
-    echo "Usage: oc-init <template_name>"
+if [ $# -eq 0 ]; then
+    echo "No template specified. Please select a template to initialize:"
+    # Dynamically read available templates from the directory
+    mapfile -t templates < <(ls -1 "$HARNESS_DIR")
+    templates+=("quit")
+    
+    PS3="Selection: "
+    select choice in "${templates[@]}"; do
+        if [ "$choice" = "quit" ]; then
+            echo "Initialization aborted."
+            exit 0
+        elif [ -n "$choice" ]; then
+            TEMPLATE="$choice"
+            break
+        else
+            echo "Invalid selection."
+            # Force exit on EOF or bad input to prevent infinite loop or failing with empty template
+            if [[ -z "$REPLY" ]] || [[ "$REPLY" == "quit" ]]; then
+                exit 1
+            fi
+        fi
+    done
+
+    if [ -z "$TEMPLATE" ]; then
+        echo "No valid template selected. Aborting."
+        exit 1
+    fi
+elif [ $# -eq 1 ]; then
+    TEMPLATE=$1
+else
+    echo "Usage: oc-init [template_name]"
     echo "Run 'oc-init --help' for more information."
     exit 1
 fi
-
-TEMPLATE=$1
 
 if [ ! -d "$HARNESS_DIR/$TEMPLATE" ]; then
     echo "Error: Template '$TEMPLATE' not found in $HARNESS_DIR"
