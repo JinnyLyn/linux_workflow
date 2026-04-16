@@ -51,9 +51,13 @@ mkdir -p ~/.config/opencode
 [ -d "$SCRIPT_DIR/opencode/skills" ] && ln -sfn "$SCRIPT_DIR/opencode/skills" ~/.config/opencode/skills
 [ -f "$SCRIPT_DIR/opencode/AGENTS.md" ] && ln -sfn "$SCRIPT_DIR/opencode/AGENTS.md" ~/.config/opencode/AGENTS.md
 [ -f "$SCRIPT_DIR/opencode/opencode.json" ] && ln -sfn "$SCRIPT_DIR/opencode/opencode.json" ~/.config/opencode/opencode.json
-[ -f "$SCRIPT_DIR/opencode/package.json" ] && ln -sfn "$SCRIPT_DIR/opencode/package.json" ~/.config/opencode/package.json
+[f "$SCRIPT_DIR/opencode/package.json" ] && ln -sfn "$SCRIPT_DIR/opencode/package.json" ~/.config/opencode/package.json
+
+# Symlink the entire opencode-harness directory for oc-init to find templates/hooks
+[ -d "$SCRIPT_DIR/opencode-harness" ] && ln -sfn "$SCRIPT_DIR/opencode-harness" ~/.config/opencode/harness
 
 # 5. Install Tmux Plugin Manager (TPM) if missing
+
 if [ ! -d ~/.tmux/plugins/tpm ]; then
     echo "[*] Installing Tmux Plugin Manager..."
     mkdir -p ~/.tmux/plugins

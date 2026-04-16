@@ -23,11 +23,17 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     exit 0
 fi
 
-# Use the script's location to find the harness directory relative to the project root
-# Since this script is in bin/, we can go up one level to find opencode-harness
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-HARNESS_DIR="$PROJECT_ROOT/opencode-harness/templates"
+# Use ~/.config/opencode/harness symlink if it exists, otherwise use relative path
+CONFIG_HARNESS="$HOME/.config/opencode/harness"
+if [ -L "$CONFIG_HARNESS" ] || [ -d "$CONFIG_HARNESS" ]; then
+    PROJECT_ROOT=$(readlink -f "$CONFIG_HARNESS")
+else
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+fi
+
+HARNESS_DIR="$PROJECT_ROOT/templates"
+HARNESS_HOOKS="$PROJECT_ROOT/hooks"
 
 if [ $# -eq 0 ]; then
     echo "No template specified. Please select a template to initialize:"
@@ -98,7 +104,6 @@ fi
 # 5. Setup git hooks if it's a git repo
 if [ -d ".git" ]; then
     HOOK_DIR=".git/hooks"
-    HARNESS_HOOKS="$PROJECT_ROOT/opencode-harness/hooks"
     
     if [ -d "$HARNESS_HOOKS" ]; then
         echo "Installing git hooks from $HARNESS_HOOKS..."
