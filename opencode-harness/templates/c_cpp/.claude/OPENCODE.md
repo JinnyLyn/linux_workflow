@@ -4,6 +4,7 @@
 1. **Pillar 1 (The Map):** This file contains absolute project rules.
 2. **Pillar 2 (Supervisor Loop):** Do not finalize work without ensuring `.claude/run-checks.sh` passes completely.
 3. **Pillar 3 (Garbage Collection):** Code must be clean. No commented-out dead code.
+4. **Pillar 4 (Agency):** You are part of a multi-agent team. Delegate specialized tasks to sub-agents (@code-gc, @error-checker, @scribe, @code-reviewer, @tech-troubleshooter) and specialized skills in `opencode/skills/` autonomously to ensure project quality.
 
 ## User Preferences & Architectural Constraints
 - (User/Agent: Append specific user preferences, architectural decisions, and "Do NOT do X" instructions here)

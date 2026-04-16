@@ -18,12 +18,26 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     exit 0
 fi
 
-PROMPT="Please use the Task tool to launch the 'code-gc' subagent to perform the following Garbage Collection pass:
-1. Read .claude/OPENCODE.md to understand the current rules.
-2. Scan the current project directory for any files that violate the rules in .claude/OPENCODE.md.
-3. Specifically look for and remove unused code, commented-out dead code, or obsolete configuration.
-4. Run '.claude/run-checks.sh' to ensure your cleanup did not break anything.
-5. If changes were made and tests pass, commit the changes with a message like 'chore: AI garbage collection cleanup'. If no changes were needed, just report that the codebase is clean."
+# --- Execution Section ---
+MODIFIED_FILES=$(git status --porcelain | awk '{print $2}')
 
-echo "Triggering AI Garbage Collection..."
+if [ -z "$MODIFIED_FILES" ]; then
+    echo "No modified files detected. Skipping Garbage Collection."
+    exit 0
+fi
+
+echo "Triggering AI Garbage Collection on modified files..."
+echo "Files to check: $MODIFIED_FILES"
+
+PROMPT="Please use the Task tool to launch the 'code-gc' subagent to perform a targeted Garbage Collection pass on the following modified files:
+$MODIFIED_FILES
+
+Process:
+1. Read .claude/OPENCODE.md to understand the current rules.
+2. Scan ONLY the files listed above for violations (dead code, unused imports, commented-out blocks).
+3. Remove the garbage and ensure the files follow project standards.
+4. Run '.claude/run-checks.sh' to ensure your cleanup did not break anything.
+5. If changes were made and tests pass, commit the changes with a message like 'chore: AI garbage collection cleanup (modified files)'.
+"
+
 opencode run "$PROMPT"
