@@ -29,18 +29,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 HARNESS_DIR="$PROJECT_ROOT/opencode-harness/templates"
 
-HOOK_TEMPLATE="#!/bin/bash
-
-# Opencode Pre-push Hook (Garbage Collection)
-# This triggers the garbage collector in the background before code is pushed to remote.
-
-echo \"Spawning background Opencode Garbage Collection...\"
-nohup oc-gc >/dev/null 2>&1 &
-disown
-
-exit 0
-"
-
 if [ $# -eq 0 ]; then
     echo "No template specified. Please select a template to initialize:"
     # Dynamically read available templates from the directory
@@ -107,16 +95,23 @@ if [ -f ".claude/run-checks.sh" ]; then
     chmod +x .claude/run-checks.sh
 fi
 
-# 5. Setup git hook if it's a git repo
+# 5. Setup git hooks if it's a git repo
 if [ -d ".git" ]; then
     HOOK_DIR=".git/hooks"
-    PRE_PUSH="$HOOK_DIR/pre-push"
+    HARNESS_HOOKS="$PROJECT_ROOT/opencode-harness/hooks"
     
-    echo "$HOOK_TEMPLATE" > "$PRE_PUSH"
-    chmod +x "$PRE_PUSH"
-    echo "Installed git pre-push hook for automatic garbage collection."
+    if [ -d "$HARNESS_HOOKS" ]; then
+        echo "Installing git hooks from $HARNESS_HOOKS..."
+        for hook_file in "$HARNESS_HOOKS"/*; do
+            hook_name=$(basename "$hook_file")
+            # We copy the hook so it is portable within the project
+            cp "$hook_file" "$HOOK_DIR/$hook_name"
+            chmod +x "$HOOK_DIR/$hook_name"
+            echo "  - Installed $hook_name"
+        done
+    fi
 else
-    echo "Not a git repository. Skipping pre-push hook installation."
+    echo "Not a git repository. Skipping git hook installation."
 fi
 
 echo "Initialization complete!"
