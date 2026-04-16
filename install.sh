@@ -46,9 +46,12 @@ ln -sfn "$SCRIPT_DIR/nvim" ~/.config/nvim
 
 # Ensure .config/opencode exists before symlinking
 mkdir -p ~/.config/opencode/profiles/default
-[ -d "$SCRIPT_DIR/opencode/agent" ] && ln -sfn "$SCRIPT_DIR/opencode/agent" ~/.config/opencode/agent
+[ -d "$SCRIPT_DIR/opencode/agents" ] && ln -sfn "$SCRIPT_DIR/opencode/agents" ~/.config/opencode/agents
 [ -d "$SCRIPT_DIR/opencode/plugin" ] && ln -sfn "$SCRIPT_DIR/opencode/plugin" ~/.config/opencode/plugin
 [ -d "$SCRIPT_DIR/opencode/skills" ] && ln -sfn "$SCRIPT_DIR/opencode/skills" ~/.config/opencode/skills
+[ -d "$SCRIPT_DIR/opencode/commands" ] && ln -sfn "$SCRIPT_DIR/opencode/commands" ~/.config/opencode/commands
+[ -d "$SCRIPT_DIR/opencode/prompts" ] && ln -sfn "$SCRIPT_DIR/opencode/prompts" ~/.config/opencode/prompts
+[ -d "$SCRIPT_DIR/opencode/tools" ] && ln -sfn "$SCRIPT_DIR/opencode/tools" ~/.config/opencode/tools
 
 # Global AGENTS.md (Root and Default Profile for absolute priority)
 [ -f "$SCRIPT_DIR/opencode/AGENTS.md" ] && ln -sfn "$SCRIPT_DIR/opencode/AGENTS.md" ~/.config/opencode/AGENTS.md
