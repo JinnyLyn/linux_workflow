@@ -64,7 +64,7 @@ return {
 
       vim.keymap.set({ "n", "x", "t" }, "<C-a>", function()
         require("opencode").toggle()
-      end, { desc = "Ask opencode…" })
+      end, { desc = "Toggle opencode…" })
 
       vim.keymap.set({ "n", "x" }, "<C-x>", function()
         require("opencode").select()

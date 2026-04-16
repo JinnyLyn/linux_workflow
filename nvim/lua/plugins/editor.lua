@@ -75,14 +75,15 @@ return {
       local wk = require("which-key")
       wk.setup()
       wk.add({
-        { "<leader>c", group = "[C]ode" },
-        { "<leader>d", group = "[D]ocument" },
+        { "<leader>c", group = "[C]ode / [C]onform" },
+        { "<leader>d", group = "[D]ocument / [D]iagnostics" },
+        { "<leader>f", group = "[F]ind" },
         { "<leader>g", group = "[G]it" },
         { "<leader>h", group = "Git [H]unk" },
         { "<leader>r", group = "[R]un / [R]ename" },
         { "<leader>s", group = "[S]earch" },
         { "<leader>l", group = "[L]SP / [L]anguage" },
-        { "<leader>a", group = "[A]I / CodeCompanion" },
+        { "<leader>a", group = "[A]I / Agent" },
       })
     end,
   },
