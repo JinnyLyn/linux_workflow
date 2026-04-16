@@ -11,9 +11,9 @@
         "/home/jin/hexstrike-ai/hexstrike-env/bin/python3",
         "/home/jin/hexstrike-ai/hexstrike_mcp.py",
         "--server",
-        "http://localhost:8888",
+        "http://localhost:8888"
       ],
-      "enabled": true,
+      "enabled": true
     },
     "context7": {
       "type": "remote",
