@@ -106,5 +106,7 @@ This creates:
 │   └── prompts/         # Custom prompts
 ```
 
+*(Note: The local `.opencode/` directories (`agents/`, `commands/`, `prompts/`) are created intentionally empty. This enables you to define project-specific overrides while still falling back to the global Harness defaults provided by this framework.)*
+
 ## Documentation
 Please refer to `nvim/lua/guide.txt` for additional details and notes on navigating this workflow.

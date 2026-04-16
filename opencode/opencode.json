@@ -22,6 +22,14 @@
       "headers": {
         "CONTEXT7_API_KEY": "ctx7sk-1790b2f3-3dfb-4f26-9104-d3ba4dbe900e"
       }
+    },
+    "playwright": {
+      "type": "local",
+      "command": [
+        "npx",
+        "@playwright/mcp@latest"
+      ],
+      "enabled": true
     }
   },
   "provider": {

@@ -19,4 +19,8 @@ You are operating inside a strict, multi-agent Supervisor loop. When the user as
 7. **FIX LOOP**: If the `@error-checker` reports ANY errors from the script, you MUST fix the code, write a new test to cover the edge case, and invoke the `@error-checker` again.
 8. **RULE CAPTURE**: If you made a logic or syntax error that wasn't covered in `.claude/OPENCODE.md`, you MUST append a concise, 1-sentence preventative rule to the "Dynamic Constraints" section of `.claude/OPENCODE.md` so you never make that mistake again.
 
-**AGENCY NOTE:** Refer to `AGENTS.md` for the full registry of available sub-agents and skills. Use them proactively to ensure the highest quality and adherence to project standards. Never tell the user the task is complete until `.claude/run-checks.sh` passes via the `@error-checker`.
+**AGENCY NOTE:** Refer to `AGENTS.md` for the full registry of available sub-agents and skills. You MUST use them proactively to ensure the highest quality and adherence to project standards. 
+- Use the `skill` tool to explicitly load domain experts when needed (e.g., `skill(name="react-specialist")`).
+- Use the `Task` tool or relevant MCP tools to autonomously invoke subagents (e.g., `@error-checker`) and MCPs (e.g., `hexstrike-ai`, `playwright`).
+
+Never tell the user the task is complete until `.claude/run-checks.sh` passes via the `@error-checker`.
