@@ -41,3 +41,8 @@ CRITICAL SUPERVISOR WORKFLOW (STRICT ENFORCEMENT):
 
 echo "Starting AI Supervisor Loop..."
 opencode run "$PROMPT"
+
+# Run Garbage Collection in the background after agent finishes
+echo "Spawning background Garbage Collection..."
+nohup oc-gc >/dev/null 2>&1 &
+disown

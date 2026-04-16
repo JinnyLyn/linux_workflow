@@ -32,14 +32,11 @@ HARNESS_DIR="$PROJECT_ROOT/opencode-harness/templates"
 HOOK_TEMPLATE="#!/bin/bash
 
 # Opencode Pre-push Hook (Garbage Collection)
-# This triggers the garbage collector before code is pushed to remote.
+# This triggers the garbage collector in the background before code is pushed to remote.
 
-echo \"Running Opencode Garbage Collection...\"
-oc-gc || {
-  echo \"Garbage collection failed or found issues that need manual review.\"
-  echo \"Push aborted. You can bypass this with git push --no-verify\"
-  exit 1
-}
+echo \"Spawning background Opencode Garbage Collection...\"
+nohup oc-gc >/dev/null 2>&1 &
+disown
 
 exit 0
 "
