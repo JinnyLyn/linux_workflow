@@ -18,12 +18,19 @@ else
     echo "[!] Unsupported package manager. Please install neovim, tmux, git, curl, gcc, ripgrep, xclip, nodejs, npm manually."
 fi
 
-# 1.5. Install opencode if not present
+# 1.5. Install OpenClaw and Opencode
+if ! command -v openclaw &> /dev/null; then
+    echo "[*] Installing OpenClaw..."
+    npm install -g openclaw
+else
+    echo "[*] OpenClaw already installed"
+fi
+
 if ! command -v opencode &> /dev/null; then
-    echo "[*] Installing opencode..."
+    echo "[*] Installing Opencode (as ACP backend)..."
     curl -fsSL https://opencode.ai/install | bash
 else
-    echo "[*] opencode already installed"
+    echo "[*] Opencode already installed"
 fi
 
 # 2. Setup Directories
@@ -60,7 +67,7 @@ mkdir -p ~/.config/opencode/profiles/default
 [ -f "$SCRIPT_DIR/opencode/opencode.json" ] && ln -sfn "$SCRIPT_DIR/opencode/opencode.json" ~/.config/opencode/opencode.json
 [ -f "$SCRIPT_DIR/opencode/package.json" ] && ln -sfn "$SCRIPT_DIR/opencode/package.json" ~/.config/opencode/package.json
 
-# Symlink the entire opencode-harness directory for oc-init to find templates/hooks
+# Symlink the entire opencode-harness directory for claw-init to find templates/hooks
 [ -d "$SCRIPT_DIR/opencode-harness" ] && ln -sfn "$SCRIPT_DIR/opencode-harness" ~/.config/opencode/harness
 
 
@@ -72,9 +79,9 @@ if [ ! -d ~/.tmux/plugins/tpm ]; then
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
 
-# 6. Setup Opencode Harness Framework
-echo "[*] Setting up Opencode Harness Framework..."
-chmod +x "$SCRIPT_DIR/bin/oc-init" "$SCRIPT_DIR/bin/oc-do" "$SCRIPT_DIR/bin/oc-gc" 2>/dev/null || true
+# 6. Setup OpenClaw Harness Framework
+echo "[*] Setting up OpenClaw Harness Framework..."
+chmod +x "$SCRIPT_DIR/bin/claw-init" "$SCRIPT_DIR/bin/claw-do" "$SCRIPT_DIR/bin/claw-gc" 2>/dev/null || true
 
 # Add bin to PATH in bashrc/zshrc
 for rc in ~/.bashrc ~/.zshrc; do

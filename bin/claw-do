@@ -1,0 +1,52 @@
+#!/bin/bash
+# claw-do: Dispatches a task to the OpenClaw Orchestrator (Neo)
+
+# --- Help Section ---
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    echo "Usage: claw-do \"<your task description>\""
+    echo ""
+    echo "Executes an AI task by delegating it to the OpenClaw Orchestrator (Neo)."
+    echo "Neo will autonomously spawn subagents in the background to:"
+    echo "  1. Read .claude/OPENCODE.md rules."
+    echo "  2. Write failing tests first (TDD)."
+    echo "  3. Complete your requested task."
+    echo "  4. Run .claude/run-checks.sh using the exec tool."
+    echo "  5. Fix errors if checks fail, and update OPENCODE.md with new learnings."
+    echo ""
+    echo "Example:"
+    echo "  claw-do \"Implement the user authentication API endpoint\""
+    exit 0
+fi
+
+if [ -z "$1" ]; then
+    echo "Usage: claw-do \"<your task description>\""
+    echo "Run 'claw-do --help' for more information."
+    exit 1
+fi
+
+TASK="$1"
+PWD_PATH=$(pwd)
+
+PROMPT="[System: Terminal Command Intercept]
+User executed 'claw-do'.
+Working Directory: $PWD_PATH
+Task: $TASK
+
+You are the Orchestrator (Neo). Do NOT answer the task directly in text.
+Instead, use the 'sessions_spawn' API tool to launch a subagent in $PWD_PATH to complete this task.
+Instruct the subagent to strictly enforce the Harness Framework:
+1. Read .claude/OPENCODE.md before coding.
+2. Follow TDD (Test-Driven Development).
+3. Execute the task.
+4. MUST run 'bash .claude/run-checks.sh' using the 'exec' tool.
+5. If it fails, fix the code and run it again.
+6. If a mistake was made, update .claude/OPENCODE.md with a new preventative rule.
+When the subagent finishes, report the result to the user."
+
+echo "[*] Dispatching task to OpenClaw Orchestrator (Neo)..."
+openclaw agent --message "$PROMPT"
+
+# Run Garbage Collection in the background
+echo "[*] Spawning background Garbage Collection..."
+nohup claw-gc >/dev/null 2>&1 &
+disown

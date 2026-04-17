@@ -1,0 +1,35 @@
+#!/bin/bash
+# claw-gc: Manual garbage collection via OpenClaw
+
+# --- Help Section ---
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    echo "Usage: claw-gc"
+    echo ""
+    echo "Triggers a manual Garbage Collection pass via Neo (OpenClaw)."
+    echo "Neo will spawn a subagent to clean up dead code and unused imports."
+    exit 0
+fi
+
+MODIFIED_FILES=$(git status --porcelain | awk '{print $2}')
+PWD_PATH=$(pwd)
+
+if [ -z "$MODIFIED_FILES" ]; then
+    echo "No modified files detected. Skipping Garbage Collection."
+    exit 0
+fi
+
+echo "[*] Triggering OpenClaw AI Garbage Collection on modified files..."
+
+PROMPT="[System: Terminal Command Intercept]
+User executed 'claw-gc'.
+Working Directory: $PWD_PATH
+Modified files: $MODIFIED_FILES
+
+Please use 'sessions_spawn' to launch a 'code-gc' subagent in $PWD_PATH.
+Instruct the subagent to:
+1. Scan ONLY the modified files for dead code, unused imports, or commented-out blocks.
+2. Remove the garbage using 'edit' or 'exec' tools.
+3. Run '.claude/run-checks.sh' to ensure nothing was broken.
+4. Commit the cleanup automatically if tests pass."
+
+openclaw agent --message "$PROMPT" > /dev/null 2>&1
